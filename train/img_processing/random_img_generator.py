@@ -23,9 +23,10 @@ def save_random_image(url, dir_, name):
 
 if __name__ == "__main__":
     url = "https://source.unsplash.com/random/256x256"
-    dir_ = "data"
+    url = "https://picsum.photos/256/256/?random"
+    dir_ = "../data"
 
     from joblib import Parallel, delayed
     from tqdm import tqdm
     Parallel(n_jobs=25, backend="threading")(
-            delayed(save_random_image)(url, dir_, "unsplash"+str(i)) for i in tqdm(range(1000)))
+            delayed(save_random_image)(url, dir_, "picsum"+str(i)) for i in tqdm(range(1000)))

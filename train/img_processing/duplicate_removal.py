@@ -32,6 +32,6 @@ def remove_dup(df):
 
 
 if __name__ == "__main__":
-    dir = "data" 
+    dir = "../data" 
     df = gen_hash_table(dir)
     remove_dup(df)
