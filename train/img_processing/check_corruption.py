@@ -23,6 +23,7 @@ marker_mapping = {
 
 
 class JPEG:
+    """check which file cannot be decoded"""
     def __init__(self, image_file):
         with open(image_file, 'rb') as f:
             self.img_data = f.read()
@@ -45,6 +46,8 @@ class JPEG:
 
 
 def get_corrupted_files(dir, delete=False):
+    """get list of corrupted files and delete them"""
+
     corrupt_list = []
     for path in tqdm(os.listdir(dir)):
         if path.endswith(".jpg"):
@@ -67,4 +70,4 @@ def get_corrupted_files(dir, delete=False):
             
 if __name__ == "__main__":
     dir = "img/flowernot"
-    get_corrupted_files(dir, True)
+    get_corrupted_files(dir, delete=True)
