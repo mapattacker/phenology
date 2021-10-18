@@ -5,13 +5,6 @@ import pandas as pd
 from PIL import Image
 from tqdm import tqdm
 
-# for each image in dir
-# open image, get dhash
-# store img path & dhash in df
-# retain duplicates
-# delete duplicates by their paths
-
-
 
 def gen_hash_table(dir):
     """generate hash list and delete duplicate images"""
