@@ -1,5 +1,6 @@
-import requests
 import os
+
+import requests
 
 
 def save_random_image(url, dir_, name):
@@ -17,14 +18,14 @@ def save_random_image(url, dir_, name):
         file_name = f'{name}.jpg'
         file_path = os.path.join(dir_, file_name)
         with open(file_path, 'wb') as f:
-            print("saving: " + file_name)
             f.write(response.content)
 
 
 if __name__ == "__main__":
-    url = "https://picsum.photos/256/256/?random"
-    dir_ = "data/flower_not"
+    url = "https://source.unsplash.com/random/256x256"
+    dir_ = "data"
 
     from joblib import Parallel, delayed
-    Parallel(n_jobs=20, backend="threading")(
-            delayed(save_random_image)(url, dir_, i) for i in range(8000))
+    from tqdm import tqdm
+    Parallel(n_jobs=25, backend="threading")(
+            delayed(save_random_image)(url, dir_, "unsplash"+str(i)) for i in tqdm(range(1000)))
