@@ -1,5 +1,5 @@
-DATA_DIR = "data/"
-# fixed for each efficientnet model
-IMG_SIZE = 224 
+DATA_DIR = "img/"
+IMG_SIZE = 224 # fixed for each efficientnet model
 NUM_CLASSES = 2
 EPOCH = 50
+LR = 1e-2 # learning rate
