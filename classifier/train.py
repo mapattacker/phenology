@@ -1,4 +1,5 @@
-"""refactored from https://colab.research.google.com/github/keras-team/keras-io/blob/master/examples/vision/ipynb/image_classification_efficientnet_fine_tuning.ipynb#scrollTo=r0HWGRFjPwCS
+"""refactored from 
+https://colab.research.google.com/github/keras-team/keras-io/blob/master/examples/vision/ipynb/image_classification_efficientnet_fine_tuning.ipynb#scrollTo=r0HWGRFjPwCS
 """
 
 from config import *
@@ -97,8 +98,8 @@ def model_arch(NUM_CLASSES, IMG_SIZE, LR):
 
 
 if __name__ == "__main__":
-    train_data, val_data = train_val_split(DATA_DIR, IMG_SIZE, LR)
-    model = model_arch(NUM_CLASSES, IMG_SIZE)
+    train_data, val_data = train_val_split(DATA_DIR, IMG_SIZE)
+    model = model_arch(NUM_CLASSES, IMG_SIZE, LR)
     
     checkpointer = ModelCheckpoint(filepath='./model', 
                             verbose=1, 
