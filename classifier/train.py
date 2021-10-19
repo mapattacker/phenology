@@ -2,6 +2,7 @@ from config import *
 
 import matplotlib.pyplot as plt
 from tensorflow.keras.applications import EfficientNetB0
+from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.preprocessing import image_dataset_from_directory
 from tensorflow.keras.models import Sequential
 from tensorflow.keras import layers
@@ -13,7 +14,7 @@ def train_val_split(DATA_DIR, IMG_SIZE):
     val_data = image_dataset_from_directory(
                     DATA_DIR,
                     labels="inferred",
-                    label_mode="binary",
+                    label_mode="int",
                     color_mode="rgb",
                     batch_size=32,
                     image_size=(IMG_SIZE, IMG_SIZE),
@@ -25,7 +26,7 @@ def train_val_split(DATA_DIR, IMG_SIZE):
     train_data = image_dataset_from_directory(
                     DATA_DIR,
                     labels="inferred",
-                    label_mode="binary",
+                    label_mode="int",
                     color_mode="rgb",
                     batch_size=32,
                     image_size=(IMG_SIZE, IMG_SIZE),
@@ -96,7 +97,13 @@ def model_arch(NUM_CLASSES, IMG_SIZE):
 if __name__ == "__main__":
     train_data, val_data = train_val_split(DATA_DIR, IMG_SIZE)
     model = model_arch(NUM_CLASSES, IMG_SIZE)
+    
+    checkpointer = ModelCheckpoint(filepath='./model', 
+                            verbose=1, 
+                            save_best_only=True)
+    
     hist = model.fit(train_data, 
                      epochs=EPOCH, 
-                     validation_data=val_data, 
+                     validation_data=val_data,
+                     callbacks=[checkpointer],
                      verbose=1)
