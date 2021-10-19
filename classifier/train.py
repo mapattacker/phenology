@@ -1,3 +1,6 @@
+"""refactored from https://colab.research.google.com/github/keras-team/keras-io/blob/master/examples/vision/ipynb/image_classification_efficientnet_fine_tuning.ipynb#scrollTo=r0HWGRFjPwCS
+"""
+
 from config import *
 
 import matplotlib.pyplot as plt
@@ -6,7 +9,6 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.preprocessing import image_dataset_from_directory
 from tensorflow.keras.models import Sequential
 from tensorflow.keras import layers
-from tensorflow.data import AUTOTUNE
 import tensorflow as tf
 
 
@@ -38,8 +40,8 @@ def train_val_split(DATA_DIR, IMG_SIZE):
     train_data = train_data.map(lambda x, y: (x, tf.one_hot(y, depth=NUM_CLASSES)))
     val_data = val_data.map(lambda x, y: (x, tf.one_hot(y, depth=NUM_CLASSES)))
 
-    train_data = train_data.cache().prefetch(buffer_size=AUTOTUNE)
-    val_data = val_data.cache().prefetch(buffer_size=AUTOTUNE)
+    train_data = train_data.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+    val_data = val_data.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
 
     return train_data, val_data
 
@@ -55,7 +57,7 @@ def plot_hist(hist, metric="accuracy"):
     plt.show()
 
 
-def model_arch(NUM_CLASSES, IMG_SIZE):
+def model_arch(NUM_CLASSES, IMG_SIZE, LR):
     """efficientnet transfer learning"""
     inputs = layers.Input(shape=(IMG_SIZE, IMG_SIZE, 3))
     img_augmentation = Sequential(
@@ -95,7 +97,7 @@ def model_arch(NUM_CLASSES, IMG_SIZE):
 
 
 if __name__ == "__main__":
-    train_data, val_data = train_val_split(DATA_DIR, IMG_SIZE)
+    train_data, val_data = train_val_split(DATA_DIR, IMG_SIZE, LR)
     model = model_arch(NUM_CLASSES, IMG_SIZE)
     
     checkpointer = ModelCheckpoint(filepath='./model', 
