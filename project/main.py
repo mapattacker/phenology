@@ -1,6 +1,5 @@
-from scrapers.flickr import flickr_images_query
 from plotter import plot_phenology
-
+from scrapers.flickr import flickr_images_query
 
 species = "Cratoxylum maingayi"
 df = flickr_images_query(species, limit=200, njobs=20)
