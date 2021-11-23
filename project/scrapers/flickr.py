@@ -10,7 +10,10 @@ from tqdm import tqdm
 
 def parse_flickr_json(api):
     """parse json return into dict"""
-    contents = requests.get(api).content.decode()
+    try:
+        contents = requests.get(api).content.decode()
+    except Exception as e:
+        print(e)
     contents = contents.replace("jsonFlickrApi","").replace("(","").replace(")","")
     contents = json.loads(contents)
     return contents
@@ -39,7 +42,10 @@ def download_photo(url, download_folder):
     """download image from flickR"""
     img_name = url.split("/")[-1]
     img_path = os.path.join(download_folder, img_name)
-    urllib.request.urlretrieve(url, img_path)
+    try:
+        urllib.request.urlretrieve(url, img_path)
+    except Exception as e:
+        print(e)
 
 
 def flickr_images_query(query, limit, 
@@ -72,27 +78,25 @@ def flickr_images_query(query, limit,
 
     # get more details for each photo
     # multi-threading
-    try:
-        compile_list = Parallel(n_jobs=njobs, backend="threading")(
-            delayed(get_photo_info)(content, flickr_url) for content in tqdm(contents, desc="get photo details"))
-    except Exception as e:
-        print(e)
+    compile_list = Parallel(n_jobs=njobs, backend="threading")(
+        delayed(get_photo_info)(content, flickr_url) for content in tqdm(contents, desc="get photo details"))
 
     df = pd.DataFrame(compile_list)
     # download metadata
     if metadata_folder:
+        if not os.path.exists(metadata_folder):
+            os.makedirs(metadata_folder)
         df.dropna(subset=["url"],inplace=True) 
         metadata_path = os.path.join(metadata_folder, "metadata.csv")
         df.to_csv(metadata_path, index=False)
 
     # download images
     if download_folder:
+        if not os.path.exists(download_folder):
+            os.makedirs(download_folder)
         urls = df["url"].tolist()
-        try:
-            compile_list = Parallel(n_jobs=njobs, backend="threading")(
-                delayed(download_photo)(url, download_folder) for url in tqdm(urls, desc="download images"))
-        except Exception as e:
-            print(e)
+        compile_list = Parallel(n_jobs=njobs, backend="threading")(
+            delayed(download_photo)(url, download_folder) for url in tqdm(urls, desc="download images"))
         
 
 
