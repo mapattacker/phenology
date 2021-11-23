@@ -51,7 +51,7 @@ def download_photo(url, download_folder):
 def flickr_images_query(query, 
         limit=100, 
         metadata_dir=None, 
-        download_dir=None, 
+        image_dir=None, 
         njobs=10):
     """Download flickr images into local drive
     Read from FLICKR official API Docs:
@@ -63,8 +63,8 @@ def flickr_images_query(query,
     ----
     text (str): keyword to search photos
     limit (int): set limit on how many photos to extract
-    metadata_folder (str): folder where metadata will be stored in csv
-    download_folder (str): folder where images will be downloaded to
+    metadata_dir (str): folder where metadata will be stored in csv
+    image_dir (str): folder where images will be downloaded to
     njobs (int): number of threads
     """
 
@@ -93,12 +93,12 @@ def flickr_images_query(query,
         df.to_csv(metadata_path, index=False)
 
     # download images
-    if download_dir:
-        if not os.path.exists(download_dir):
-            os.makedirs(download_dir)
+    if image_dir:
+        if not os.path.exists(image_dir):
+            os.makedirs(image_dir)
         urls = df["url"].tolist()
         compile_list = Parallel(n_jobs=njobs, backend="threading")(
-            delayed(download_photo)(url, download_dir) for url in tqdm(urls, desc="download images"))
+            delayed(download_photo)(url, image_dir) for url in tqdm(urls, desc="download images"))
 
     return df
 

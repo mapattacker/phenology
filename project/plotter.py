@@ -7,6 +7,7 @@ import pandas as pd
 
 def plot_phenology(df, species, save_dir=None, display=True):
     """plot line graph of when images were taken each mth"""
+    df = df[df["flower"]==1]
 
     # count photos each month
     df = df["taken"].dt.month.value_counts()
@@ -28,6 +29,7 @@ def plot_phenology(df, species, save_dir=None, display=True):
     plt.plot(df["month"], df["count"])
     plt.xlabel('Month')
     plt.ylabel('Count')
+    plt.title(species)
 
     if save_dir:
         save_path = os.path.join(save_dir, species+".png")
