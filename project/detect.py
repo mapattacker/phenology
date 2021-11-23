@@ -132,59 +132,6 @@ def run(model_parms, # loaded model
     save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
     (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
 
-    # # Initialize
-    # device = select_device(device)
-    # half &= device.type != 'cpu'  # half precision only supported on CUDA
-
-    # # Load model
-    # w = str(weights[0] if isinstance(weights, list) else weights)
-    # classify, suffix, suffixes = False, Path(w).suffix.lower(), ['.pt', '.onnx', '.tflite', '.pb', '']
-    # check_suffix(w, suffixes)  # check weights have acceptable suffix
-    # pt, onnx, tflite, pb, saved_model = (suffix == x for x in suffixes)  # backend booleans
-    # stride, names = 64, [f'class{i}' for i in range(1000)]  # assign defaults
-    # if pt:
-    #     model = torch.jit.load(w) if 'torchscript' in w else attempt_load(weights, map_location=device)
-    #     stride = int(model.stride.max())  # model stride
-    #     names = model.module.names if hasattr(model, 'module') else model.names  # get class names
-    #     if half:
-    #         model.half()  # to FP16
-    #     if classify:  # second-stage classifier
-    #         modelc = load_classifier(name='resnet50', n=2)  # initialize
-    #         modelc.load_state_dict(torch.load('resnet50.pt', map_location=device)['model']).to(device).eval()
-    # elif onnx:
-    #     if dnn:
-    #         check_requirements(('opencv-python>=4.5.4',))
-    #         net = cv2.dnn.readNetFromONNX(w)
-    #     else:
-    #         check_requirements(('onnx', 'onnxruntime-gpu' if torch.has_cuda else 'onnxruntime'))
-    #         import onnxruntime
-    #         session = onnxruntime.InferenceSession(w, None)
-    # else:  # TensorFlow models
-    #     import tensorflow as tf
-    #     if pb:  # https://www.tensorflow.org/guide/migrate#a_graphpb_or_graphpbtxt
-    #         def wrap_frozen_graph(gd, inputs, outputs):
-    #             x = tf.compat.v1.wrap_function(lambda: tf.compat.v1.import_graph_def(gd, name=""), [])  # wrapped import
-    #             return x.prune(tf.nest.map_structure(x.graph.as_graph_element, inputs),
-    #                            tf.nest.map_structure(x.graph.as_graph_element, outputs))
-
-    #         graph_def = tf.Graph().as_graph_def()
-    #         graph_def.ParseFromString(open(w, 'rb').read())
-    #         frozen_func = wrap_frozen_graph(gd=graph_def, inputs="x:0", outputs="Identity:0")
-    #     elif saved_model:
-    #         model = tf.keras.models.load_model(w)
-    #     elif tflite:
-    #         if "edgetpu" in w:  # https://www.tensorflow.org/lite/guide/python#install_tensorflow_lite_for_python
-    #             import tflite_runtime.interpreter as tflri
-    #             delegate = {'Linux': 'libedgetpu.so.1',  # install libedgetpu https://coral.ai/software/#edgetpu-runtime
-    #                         'Darwin': 'libedgetpu.1.dylib',
-    #                         'Windows': 'edgetpu.dll'}[platform.system()]
-    #             interpreter = tflri.Interpreter(model_path=w, experimental_delegates=[tflri.load_delegate(delegate)])
-    #         else:
-    #             interpreter = tf.lite.Interpreter(model_path=w)  # load TFLite model
-    #         interpreter.allocate_tensors()  # allocate
-    #         input_details = interpreter.get_input_details()  # inputs
-    #         output_details = interpreter.get_output_details()  # outputs
-    #         int8 = input_details[0]['dtype'] == np.uint8  # is TFLite quantized uint8 model
     imgsz = check_img_size(imgsz, s=stride)  # check image size
 
     # Dataloader
@@ -279,7 +226,7 @@ def run(model_parms, # loaded model
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
 
-                # Print results --------------------
+                # Print results
                 for c in det[:, -1].unique():
                     n = (det[:, -1] == c).sum()  # detections per class
                     s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
@@ -299,7 +246,7 @@ def run(model_parms, # loaded model
                         if save_crop:
                             save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
 
-            # Print time (inference-only) --------------------
+            # Print time (inference-only)
             # LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)')
 
             # Stream results
@@ -327,9 +274,6 @@ def run(model_parms, # loaded model
                         vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
                     vid_writer[i].write(im0)
 
-    # Print results
-    # t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
-    # LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t)
     if save_txt or save_img:
         s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
         LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
