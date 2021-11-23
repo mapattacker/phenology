@@ -1,4 +1,3 @@
-import argparse
 import json
 import os
 import urllib
@@ -56,8 +55,9 @@ def flickr_images_query(query, limit,
     Args
     ----
     text (str): keyword to search photos
-    folder (str): folder where images will be downloaded & stored in
     limit (int): set limit on how many photos to extract
+    metadata_folder (str): folder where metadata will be stored in csv
+    download_folder (str): folder where images will be downloaded to
     njobs (int): number of threads
     """
 
@@ -93,9 +93,6 @@ def flickr_images_query(query, limit,
 
 if __name__ == "__main__":
 
-    # query = args["query"]
-    # output = args["output"]
-    # limit = args["limit"]
     query = "Cratoxylum formosum"
     limit = 50
 
