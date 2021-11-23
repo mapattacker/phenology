@@ -43,8 +43,8 @@ def download_photo(url, download_folder):
 
 
 def flickr_images_query(query, limit, 
-        metadata_folder="data", 
-        download_folder="../img", 
+        metadata_folder="metadata", 
+        download_folder="img", 
         njobs=10):
     """Download flickr images into local drive
     Read from FLICKR official API Docs:
@@ -72,29 +72,35 @@ def flickr_images_query(query, limit,
 
     # get more details for each photo
     # multi-threading
-    compile_list = Parallel(n_jobs=njobs, backend="threading")(
+    try:
+        compile_list = Parallel(n_jobs=njobs, backend="threading")(
             delayed(get_photo_info)(content, flickr_url) for content in tqdm(contents, desc="get photo details"))
+    except Exception as e:
+        print(e)
 
     df = pd.DataFrame(compile_list)
     # download metadata
     if metadata_folder:
         df.dropna(subset=["url"],inplace=True) 
-        df.to_csv("test.csv", index=False)
+        metadata_path = os.path.join(metadata_folder, "metadata.csv")
+        df.to_csv(metadata_path, index=False)
 
     # download images
     if download_folder:
         urls = df["url"].tolist()
-        compile_list = Parallel(n_jobs=njobs, backend="threading")(
-            delayed(download_photo)(url, download_folder) for url in tqdm(urls, desc="download images"))
-    
-    print("FlickR download complete")
-    
+        try:
+            compile_list = Parallel(n_jobs=njobs, backend="threading")(
+                delayed(download_photo)(url, download_folder) for url in tqdm(urls, desc="download images"))
+        except Exception as e:
+            print(e)
+        
 
 
 if __name__ == "__main__":
 
     query = "Cratoxylum formosum"
-    limit = 50
+    limit = 200
+    njobs = 20
 
-    flickr_images_query(query, limit)
+    flickr_images_query(query, limit, njobs=20)
     
