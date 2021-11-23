@@ -50,8 +50,8 @@ def download_photo(url, download_folder):
 
 def flickr_images_query(query, 
         limit=100, 
-        metadata_folder=None, 
-        download_folder=None, 
+        metadata_dir=None, 
+        download_dir=None, 
         njobs=10):
     """Download flickr images into local drive
     Read from FLICKR official API Docs:
@@ -86,19 +86,19 @@ def flickr_images_query(query,
     df["taken"] = pd.to_datetime(df["taken"])
     df.dropna(subset=["url"], inplace=True) 
     # download metadata
-    if metadata_folder:
-        if not os.path.exists(metadata_folder):
-            os.makedirs(metadata_folder)
-        metadata_path = os.path.join(metadata_folder, "metadata.csv")
+    if metadata_dir:
+        if not os.path.exists(metadata_dir):
+            os.makedirs(metadata_dir)
+        metadata_path = os.path.join(metadata_dir, "metadata.csv")
         df.to_csv(metadata_path, index=False)
 
     # download images
-    if download_folder:
-        if not os.path.exists(download_folder):
-            os.makedirs(download_folder)
+    if download_dir:
+        if not os.path.exists(download_dir):
+            os.makedirs(download_dir)
         urls = df["url"].tolist()
         compile_list = Parallel(n_jobs=njobs, backend="threading")(
-            delayed(download_photo)(url, download_folder) for url in tqdm(urls, desc="download images"))
+            delayed(download_photo)(url, download_dir) for url in tqdm(urls, desc="download images"))
 
     return df
 
