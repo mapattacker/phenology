@@ -4,7 +4,7 @@ import os
 from tqdm import tqdm, tqdm_pandas
 
 from detect import load_model, run
-from plotter import plot_phenology
+from plotter import phenology_plot
 from scrapers.flickr import flickr_images_query
 
 
@@ -44,16 +44,18 @@ def main(species,
     tqdm.pandas(desc="classifying flowers")
     model_params = load_model(weights=weights)
     df["flower"] = df["url"].progress_apply(lambda x: run_prediction(x))
-    plot_phenology(df, species, save_dir=plot_dir, display=False)
+    phenology_plot(df, species, save_dir=plot_dir, display=False)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Captcha Prediction')
     parser.add_argument('-s','--species', help='plant species name', required=True)
-    parser.add_argument('-l','--limit', help='how many photos to extract')
-    parser.add_argument('-t','--threads', help='number of threads to query API & download photos')
+    parser.add_argument('-l','--limit', help='how many photos to extract', type=int)
+    parser.add_argument('-t','--threads', help='number of threads to query API & download photos', type=int)
     args = vars(parser.parse_args())
+
+    main(**args)
 
     # species = "Tabebuia rosea"
     # limit = 500
-    main(**args)
+    # main(species)
