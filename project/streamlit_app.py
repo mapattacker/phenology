@@ -20,10 +20,11 @@ model_params = load_model(weights=weight_path)
 def altair_chart(df, species, color="red"):
     c = alt.Chart(df, title=species, height=400
             ).mark_line(
-                point={"filled": True, "fill": color}
+                point={"filled": True, "fill": color},
+                interpolate='monotone'
             ).encode(
                 x=alt.X('month', sort=df["month"].tolist()),
-                y='count', 
+                y=alt.Y('count', axis=alt.Axis(tickMinStep=1)),
                 tooltip=['month', 'count']
             ).configure_line(
                     color=color)
@@ -42,7 +43,6 @@ def main():
     species = st.text_input("Species Name")
     limit = st.slider("No. of Photos", min_value=10, max_value=500, value=100, step=10)
 
-    # limit = sidebar()
     threads = max(10, int(limit/10))
     img_dir = "images" + "_" + str(time()).replace(".","")
     output_dir = "output"
@@ -52,19 +52,24 @@ def main():
     def run_prediction(url):
         img_name = url.split("/")[-1]
         img_path = os.path.join(img_dir, img_name)
-        prediction = run(model_params,
-                        source=img_path,
-                        conf_thres=0.4,
-                        nosave=True)
-        return prediction
+        
+        if os.path.isfile(img_path):
+            prediction = run(model_params,
+                            source=img_path,
+                            conf_thres=0.4,
+                            nosave=True)
+            return prediction
+        else:
+            return 0
 
     if st.button("Start"):
-        with st.spinner("Downloading images..."):
+        with st.spinner("Downloading images. Please hold your horses..."):
             df = flickr_images_query(species, 
                     metadata_dir=output_dir, image_dir=img_dir,
                     limit=limit, njobs=threads,
                     FLICKR_ACCESS_KEY=key)
         df["flower"] = df["url"].progress_apply(lambda x: run_prediction(x))
+        
         # delete all images after prediction
         shutil.rmtree(img_dir)
         

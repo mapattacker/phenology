@@ -10,11 +10,20 @@ def phenology_df(df):
     
     df = df[df["flower"]==1]
     df["taken"] = pd.to_datetime(df["taken"])
+    df["year"] = df["taken"].dt.year
+    df["month"] = df["taken"].dt.month
+
+    # count years for each month
+    df = df.groupby("month")["year"].unique()
+    df = pd.DataFrame(df).reset_index()
+    df["count"] = df["year"].apply(lambda x: len(list(x)))
+    del df["year"]
+    df.columns = ["month", "count"]
 
     # count photos each month
-    df = df["taken"].dt.month.value_counts()
-    df = pd.DataFrame(df).reset_index()
-    df.columns = ["month", "count"]
+    # df = df["taken"].dt.month.value_counts()
+    # df = pd.DataFrame(df).reset_index()
+    # df.columns = ["month", "count"]
 
     # append missing months
     missing_mths = list(set([1,2,3,4,5,6,7,8,9,10,11,12]) ^ set(df["month"]))

@@ -27,7 +27,7 @@ def main(species,
     threads (int): number of threads to query API & download photos
     weights (pt): path to yolov5 pytorch model
     conf_thres (float): confidence threshold for object detection"""
-
+    
     df = flickr_images_query(species, limit=limit, 
             metadata_dir=metadata_dir, image_dir=img_dir, 
             njobs=threads)
@@ -35,11 +35,15 @@ def main(species,
     def run_prediction(url):
         img_name = url.split("/")[-1]
         img_path = os.path.join(img_dir, img_name)
-        prediction = run(model_params,
-                        source=img_path,
-                        conf_thres=conf_thres,
-                        nosave=True)
-        return prediction
+        
+        if os.path.isfile(img_path):
+            prediction = run(model_params,
+                            source=img_path,
+                            conf_thres=conf_thres,
+                            nosave=True)
+            return prediction
+        else:
+            return 0
     
     tqdm.pandas(desc="classifying flowers")
     model_params = load_model(weights=weights)
@@ -50,12 +54,8 @@ def main(species,
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Captcha Prediction')
     parser.add_argument('-s','--species', help='plant species name', required=True)
-    parser.add_argument('-l','--limit', help='how many photos to extract', type=int)
-    parser.add_argument('-t','--threads', help='number of threads to query API & download photos', type=int)
+    parser.add_argument('-l','--limit', help='how many photos to extract', type=int, default=200)
+    parser.add_argument('-t','--threads', help='number of threads to query API & download photos', type=int, default=15)
     args = vars(parser.parse_args())
 
     main(**args)
-
-    # species = "Tabebuia rosea"
-    # limit = 500
-    # main(species)

@@ -86,7 +86,8 @@ def flickr_images_query(query,
         delayed(get_photo_info)(content, flickr_url) for content in tqdm(contents, desc="download metadata"))
 
     df = pd.DataFrame(compile_list)
-    df.dropna(subset=["url"], inplace=True) 
+    df.dropna(subset=["url"], inplace=True)
+    
     # download metadata
     if metadata_dir:
         if not os.path.exists(metadata_dir):
