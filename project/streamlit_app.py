@@ -60,8 +60,10 @@ def main(model_params):
                     FLICKR_ACCESS_KEY=key)
         df["flower"] = df["url"].progress_apply(lambda x: run_prediction(x))
 
+        total_img = df[df["flower"]==1]
+        st.text(f"Total flower images: {len(total_img)}")
+
         df = phenology_df(df)
-        st.text(f"Total flower images: {len(df)}")
         c = altair_chart(df, species)
         st.altair_chart(c, use_container_width=True)
         
