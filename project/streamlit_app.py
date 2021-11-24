@@ -19,14 +19,16 @@ model_params = load_model(weights=weight_path)
 
 def altair_chart(df, species):
     """set altair chart configs"""
+    # define chart variables
     red = "red"; blue = "#5276A7"
     months = df["month"].tolist()
     max_year = max(df["year_count"].tolist())
+
     a = alt.Chart(df, title=species, height=400
             ).mark_area(
-                # point={"filled": True, "fill": blue},
-                interpolate='monotone',
-                opacity=0.8,
+                point={"filled": True, "fill": blue},
+                interpolate='natural',
+                opacity=0.4,
                 color=blue
             ).encode(
                 x=alt.X('month', sort=months),
@@ -38,9 +40,12 @@ def altair_chart(df, species):
                 tooltip=['month', 'year_count']
             )
     b = alt.Chart(df, title=species, height=400
-            ).mark_circle(
-                # point={"filled": True, "fill": red},
-                color=red, size=60
+            ).mark_area(
+                point={"filled": True, "fill": red},
+                interpolate='natural',
+                opacity=0.2,
+                color=red, 
+                # size=60
             ).encode(
                 x=alt.X('month', sort=months),
                 y=alt.Y('photo_count', 
