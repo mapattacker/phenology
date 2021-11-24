@@ -12,13 +12,16 @@ from scrapers.flickr import flickr_images_query
 
 
 
-def altair_chart(df, species):
+def altair_chart(df, species, color="red"):
     c = alt.Chart(df, title=species, height=400
-            ).mark_line().encode(
+            ).mark_line(
+                point={"filled": True, "fill": color}
+            ).encode(
                 x=alt.X('month', sort=df["month"].tolist()),
                 y='count', 
                 tooltip=['month', 'count']
-            )
+            ).configure_line(
+                    color=color)
     return c
 
 def main(model_params):
