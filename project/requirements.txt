@@ -14,8 +14,8 @@ scipy==1.7.2
 seaborn==0.11.2
 stqdm==0.0.4
 streamlit==1.2.0
-tensorflow==2.7.0
-tflite_runtime==2.5.0
+#tensorflow==2.7.0
+#tflite_runtime==2.5.0
 thop==0.0.31-2005241907
 torch==1.10.0
 torchvision==0.11.1
