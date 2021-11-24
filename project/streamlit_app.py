@@ -23,7 +23,7 @@ def altair_chart(df, species):
     red = "red"; blue = "#5276A7"
     months = df["month"].tolist()
     max_year = max(df["year_count"].tolist())
-    interpolate = "basis"
+    interpolate = "monotone"
 
     a = alt.Chart(df, title=species, height=400
             ).mark_area(
