@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 import urllib
 
 import pandas as pd
@@ -61,7 +62,7 @@ def flickr_images_query(query,
     
     Args
     ----
-    text (str): keyword to search photos
+    query (str): keyword to search photos
     limit (int): set limit on how many photos to extract
     metadata_dir (str): folder where metadata will be stored in csv
     image_dir (str): folder where images will be downloaded to
@@ -83,7 +84,6 @@ def flickr_images_query(query,
         delayed(get_photo_info)(content, flickr_url) for content in tqdm(contents, desc="download metadata"))
 
     df = pd.DataFrame(compile_list)
-    df["taken"] = pd.to_datetime(df["taken"])
     df.dropna(subset=["url"], inplace=True) 
     # download metadata
     if metadata_dir:
@@ -95,6 +95,7 @@ def flickr_images_query(query,
     # download images
     if image_dir:
         if not os.path.exists(image_dir):
+            shutil.rmtree(image_dir)
             os.makedirs(image_dir)
         urls = df["url"].tolist()
         compile_list = Parallel(n_jobs=njobs, backend="threading")(
