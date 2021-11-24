@@ -27,7 +27,7 @@ def altair_chart(df, species):
 
     a = alt.Chart(df, title=species, height=400
             ).mark_area(
-                point={"filled": True, "fill": blue},
+                # point={"filled": True, "fill": blue},
                 interpolate=interpolate,
                 opacity=0.4,
                 color=blue
@@ -42,7 +42,7 @@ def altair_chart(df, species):
             )
     b = alt.Chart(df, title=species, height=400
             ).mark_area(
-                point={"filled": True, "fill": red},
+                # point={"filled": True, "fill": red},
                 interpolate=interpolate,
                 opacity=0.2,
                 color=red, 
