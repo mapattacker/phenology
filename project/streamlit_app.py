@@ -17,17 +17,42 @@ weight_path = os.path.join(path, "weights/best.pt")
 model_params = load_model(weights=weight_path)
 
 
-def altair_chart(df, species, color="red"):
-    c = alt.Chart(df, title=species, height=400
-            ).mark_line(
-                point={"filled": True, "fill": color},
-                interpolate='monotone'
+def altair_chart(df, species):
+    """set altair chart configs"""
+    red = "red"; blue = "#5276A7"
+    months = df["month"].tolist()
+    max_year = max(df["year_count"].tolist())
+    a = alt.Chart(df, title=species, height=400
+            ).mark_area(
+                # point={"filled": True, "fill": blue},
+                interpolate='monotone',
+                opacity=0.8,
+                color=blue
             ).encode(
-                x=alt.X('month', sort=df["month"].tolist()),
-                y=alt.Y('count', axis=alt.Axis(tickMinStep=1)),
-                tooltip=['month', 'count']
-            ).configure_line(
-                    color=color)
+                x=alt.X('month', sort=months),
+                y=alt.Y('year_count', 
+                        axis=alt.Axis(tickMinStep=1,
+                        # scale=alt.Scale(domain=[0, max_year+1]),
+                        title='total flowering years',
+                        titleColor=blue)),
+                tooltip=['month', 'year_count']
+            )
+    b = alt.Chart(df, title=species, height=400
+            ).mark_circle(
+                # point={"filled": True, "fill": red},
+                color=red, size=60
+            ).encode(
+                x=alt.X('month', sort=months),
+                y=alt.Y('photo_count', 
+                        axis=alt.Axis(tickMinStep=1, 
+                        title='total flowering photos', 
+                        titleColor=red)),
+                tooltip=['month', 'photo_count']
+            )
+    c = alt.layer(a, b
+            ).resolve_scale(
+                y='independent'
+            )
     return c
 
 
@@ -52,7 +77,7 @@ def main():
     def run_prediction(url):
         img_name = url.split("/")[-1]
         img_path = os.path.join(img_dir, img_name)
-        
+
         if os.path.isfile(img_path):
             prediction = run(model_params,
                             source=img_path,
