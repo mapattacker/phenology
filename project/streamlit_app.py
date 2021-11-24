@@ -59,5 +59,7 @@ def main(model_params):
         
 
 if __name__ == "__main__":
-    model_params = load_model(weights="weights/best.pt")
+    path = os.path.dirname(__file__)
+    weight_path = os.path.join(path, "weights/best.pt")
+    model_params = load_model(weights=weight_path)
     main(model_params)
