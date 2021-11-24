@@ -65,15 +65,15 @@ def main():
                     limit=limit, njobs=threads,
                     FLICKR_ACCESS_KEY=key)
         df["flower"] = df["url"].progress_apply(lambda x: run_prediction(x))
-
+        # delete all images after prediction
+        shutil.rmtree(img_dir)
+        
         total_img = df[df["flower"]==1]
         st.text(f"Total flower images: {len(total_img)}")
 
         df = phenology_df(df)
         c = altair_chart(df, species)
         st.altair_chart(c, use_container_width=True)
-        
-        shutil.rmtree(img_dir)
         
 
 if __name__ == "__main__":
