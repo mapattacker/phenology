@@ -11,6 +11,11 @@ from plotter import phenology_df
 from scrapers.flickr import flickr_images_query
 
 
+# load model
+path = os.path.dirname(__file__)
+weight_path = os.path.join(path, "weights/best.pt")
+model_params = load_model(weights=weight_path)
+
 
 def altair_chart(df, species, color="red"):
     c = alt.Chart(df, title=species, height=400
@@ -24,7 +29,8 @@ def altair_chart(df, species, color="red"):
                     color=color)
     return c
 
-def main(model_params):
+
+def main():
     st.title("Phenology Generator")
     st.markdown("""A demonstration site to generate phenology graphs from FlickR images.
         First, [generate](https://www.flickr.com/services/api/misc.api_keys.html) a FlickR API access key.
@@ -71,7 +77,4 @@ def main(model_params):
         
 
 if __name__ == "__main__":
-    path = os.path.dirname(__file__)
-    weight_path = os.path.join(path, "weights/best.pt")
-    model_params = load_model(weights=weight_path)
-    main(model_params)
+    main()
