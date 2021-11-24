@@ -80,7 +80,7 @@ def flickr_images_query(query,
     # get more details for each photo
     # multi-threading
     compile_list = Parallel(n_jobs=njobs, backend="threading")(
-        delayed(get_photo_info)(content, flickr_url) for content in tqdm(contents, desc="download photo metadata"))
+        delayed(get_photo_info)(content, flickr_url) for content in tqdm(contents, desc="download metadata"))
 
     df = pd.DataFrame(compile_list)
     df["taken"] = pd.to_datetime(df["taken"])
