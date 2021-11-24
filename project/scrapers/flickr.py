@@ -53,7 +53,8 @@ def flickr_images_query(query,
         limit=100, 
         metadata_dir=None, 
         image_dir=None, 
-        njobs=10):
+        njobs=10,
+        FLICKR_ACCESS_KEY=False):
     """Download flickr images into local drive
     Read from FLICKR official API Docs:
     1) API Docs on Search: https://www.flickr.com/services/api/flickr.photos.search.html
@@ -68,8 +69,9 @@ def flickr_images_query(query,
     image_dir (str): folder where images will be downloaded to
     njobs (int): number of threads
     """
-
-    FLICKR_ACCESS_KEY = os.environ["FLICKR_ACCESS_KEY"]
+    
+    if not FLICKR_ACCESS_KEY:
+        FLICKR_ACCESS_KEY = os.environ["FLICKR_ACCESS_KEY"]
 
     # search photo based on species
     flickr_url = f"https://api.flickr.com/services/rest/?format=json&sort=relevance&api_key={FLICKR_ACCESS_KEY}"
@@ -94,9 +96,9 @@ def flickr_images_query(query,
 
     # download images
     if image_dir:
-        if not os.path.exists(image_dir):
+        if os.path.exists(image_dir):
             shutil.rmtree(image_dir)
-            os.makedirs(image_dir)
+        os.makedirs(image_dir)
         urls = df["url"].tolist()
         compile_list = Parallel(n_jobs=njobs, backend="threading")(
             delayed(download_photo)(url, image_dir) for url in tqdm(urls, desc="download images"))
