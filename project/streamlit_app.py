@@ -1,4 +1,6 @@
 import os
+import shutil
+from time import time
 
 import altair as alt
 import streamlit as st
@@ -9,10 +11,6 @@ from plotter import phenology_df
 from scrapers.flickr import flickr_images_query
 
 
-def sidebar():
-    st.sidebar.title("Change Parameters")
-    limit = st.sidebar.slider("No. of Photos", min_value=50, max_value=500, value=100, step=10)
-    return limit
 
 def altair_chart(df, species):
     c = alt.Chart(df, title=species, height=400
@@ -31,7 +29,7 @@ def main(model_params):
 
     # limit = sidebar()
     threads = max(10, int(limit/10))
-    img_dir = "images"
+    img_dir = "images" + "_" + str(time()).replace(".","")
     output_dir = "output"
 
     # func for running prediction in pandas apply
@@ -56,7 +54,8 @@ def main(model_params):
         df = phenology_df(df)
         c = altair_chart(df, species)
         st.altair_chart(c, use_container_width=True)
-
+        
+        shutil.rmtree(img_dir)
         
 
 if __name__ == "__main__":
