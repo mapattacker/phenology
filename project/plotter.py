@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-def plot_phenology(df, species, save_dir=None, display=True):
-    """plot line graph of when images were taken each mth"""
+def phenology_df(df):
+    """generate phenology df"""
     
     df = df[df["flower"]==1]
     df["taken"] = pd.to_datetime(df["taken"])
@@ -25,6 +25,13 @@ def plot_phenology(df, species, save_dir=None, display=True):
     df = df.append(df_miss).sort_values("month").reset_index(drop=True)
     df['month'] = df['month'].apply(lambda x: calendar.month_abbr[x])
 
+    return df
+    
+
+def phenology_plot(df, species, save_dir=None, display=True):
+    """plot line graph of when images were taken each mth"""
+    df = phenology_df(df)
+
     # plot phenology
     plt.style.use('seaborn')
     plt.figure(figsize=(12,5), dpi=150)
@@ -38,4 +45,3 @@ def plot_phenology(df, species, save_dir=None, display=True):
         plt.savefig(save_path)
     if display:
         plt.show()
-    
