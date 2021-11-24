@@ -15,7 +15,7 @@ def main(species,
          plot_dir="output",
          limit=200, 
          threads=15,
-         weights="model/best.pt", 
+         weights="weights/best.pt", 
          conf_thres=0.4):
     """download flickr plant species photos, detect flower, plot phenology graph
     
