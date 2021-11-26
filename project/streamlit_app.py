@@ -64,15 +64,15 @@ def altair_chart(df, species):
 
 def main():
     st.title("Phenology Generator")
-    st.markdown("""A demonstration site to generate phenology graphs from FlickR images.
-        First, [generate](https://www.flickr.com/services/api/misc.api_keys.html) a FlickR API access key.
+    st.markdown("""A demonstration site to generate flowering phenology graphs from Flickr images.
+        First, [generate](https://www.flickr.com/services/api/misc.api_keys.html) a Flickr API access key.
         Then, enter the full species name of the plant, and the number of photos you want to grab from FlickR.
         A classifier will differentiate if the photo contains flowers, 
         and their photo taken date will be used to generate the graph.""")
 
     key = st.text_input("Flickr API Access Key", type="password")
     species = st.text_input("Species Name")
-    limit = st.slider("No. of Photos", min_value=10, max_value=500, value=100, step=10)
+    limit = st.slider("No. of Photos to Extract", min_value=10, max_value=500, value=100, step=10)
 
     threads = max(10, int(limit/10))
     img_dir = "images" + "_" + str(time()).replace(".","")
