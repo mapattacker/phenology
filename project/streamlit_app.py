@@ -18,7 +18,7 @@ weight_path = os.path.join(path, "weights/best.pt")
 model_params = load_model(weights=weight_path)
 
 
-def altair_chart(df, species):
+def altair_chart(df):
     """set altair chart configs"""
     # define chart variables
     red = "red"; blue = "#5276A7"
@@ -26,7 +26,7 @@ def altair_chart(df, species):
     max_year = max(df["year_count"].tolist())
     interpolate = "monotone"
 
-    a = alt.Chart(df, title=species, height=400
+    a = alt.Chart(df, height=400
             ).mark_area(
                 # point={"filled": True, "fill": blue},
                 interpolate=interpolate,
@@ -41,7 +41,7 @@ def altair_chart(df, species):
                         titleColor=blue)),
                 tooltip=['month', 'year_count']
             )
-    b = alt.Chart(df, title=species, height=400
+    b = alt.Chart(df, height=400
             ).mark_area(
                 # point={"filled": True, "fill": red},
                 interpolate=interpolate,
@@ -113,7 +113,7 @@ def main():
         st.text(f"Total flower images: {len(total_img)}")
 
         df = phenology_df(df)
-        c = altair_chart(df, species)
+        c = altair_chart(df)
         st.altair_chart(c, use_container_width=True)
         
 
