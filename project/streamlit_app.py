@@ -67,7 +67,7 @@ def main():
     st.title("Phenology Generator")
     st.markdown("""A demonstration site to generate flowering phenology graphs from Flickr images.
         First, [generate](https://www.flickr.com/services/api/misc.api_keys.html) a Flickr API access key.
-        Then, enter the full species name of the plant, and the number of photos you want to grab from FlickR.
+        Then, enter the full species name of the plant, and the number of photos you want to grab from Flickr.
         A classifier will differentiate if the photo contains flowers, 
         and their photo taken date will be used to generate the graph.""")
 
