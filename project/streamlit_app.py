@@ -1,6 +1,7 @@
 import os
 import shutil
 from time import time
+from time import sleep
 
 import altair as alt
 import streamlit as st
@@ -99,6 +100,10 @@ def main():
                     metadata_dir=output_dir, image_dir=img_dir,
                     limit=limit, njobs=threads,
                     FLICKR_ACCESS_KEY=key)
+
+        with st.spinner(f'{len(df)} valid images downloaded!'):
+            sleep(4)
+        
         df["flower"] = df["url"].progress_apply(lambda x: run_prediction(x))
         
         # delete all images after prediction
