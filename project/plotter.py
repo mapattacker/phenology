@@ -45,7 +45,7 @@ def phenology_plot(df, species, save_dir=None, display=True):
     # plot phenology
     plt.style.use('seaborn')
     plt.figure(figsize=(12,5), dpi=150)
-    plt.plot(df["month"], df["count"])
+    plt.plot(df["month"], df["year_count"])
     plt.xlabel('Month')
     plt.ylabel('Count')
     plt.title(species)
