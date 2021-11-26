@@ -49,6 +49,18 @@ def download_photo(url, download_folder):
         print(e)
 
 
+def validate_title(species, title):
+    """simple validation to sure title contains species name"""
+    species_list = species.lower().split(" ")
+    title_list = title.lower().split(" ")
+
+    flag = 0
+    for word in species_list:
+        if word in title_list:
+            flag = 1
+    return flag
+
+
 def flickr_images_query(query, 
         limit=100, 
         metadata_dir=None, 
@@ -87,6 +99,11 @@ def flickr_images_query(query,
 
     df = pd.DataFrame(compile_list)
     df.dropna(subset=["url"], inplace=True)
+
+    # delete entries which fail title validation of species name
+    df["title_check"] = df["title"].apply(lambda x: validate_title(query, x))
+    df = df[df["title_check"]==1]
+    del df["title_check"]
     
     # download metadata
     if metadata_dir:
@@ -111,9 +128,6 @@ def flickr_images_query(query,
 
 if __name__ == "__main__":
 
-    query = "Cratoxylum formosum"
-    limit = 200
-    njobs = 20
-
-    flickr_images_query(query, limit, njobs=20)
+    x = validate_title("Fagraea fragrans", "fagra ragrans")
+    print(x)
     
