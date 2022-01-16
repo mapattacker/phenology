@@ -18,8 +18,4 @@ pip install -r requirements.txt
 python main.py --species "Tabebuia rosea"
 ```
 
-Phenology graph will be saved to `output/` folder
-
-## Demo Site
-
-You may play with this script via our demo [site](https://share.streamlit.io/mapattacker/phenology/project/streamlit_app.py).
+Phenology graph will be saved to `output/` folder.
